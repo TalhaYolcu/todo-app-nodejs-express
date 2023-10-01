@@ -1,7 +1,10 @@
 //console.log("Welcome to TO-DO app");
 
-const express = require('express');
+//import db
+const connectDB = require('./db/connect')
 
+//import express and app
+const express = require('express');
 const app = express();
 
 
@@ -12,7 +15,8 @@ app.use(express.json())
 const tasks = require('./routes/tasks');
 app.use('/api/v1/tasks',tasks)
 
-
+//import dotenv get the db url
+require('dotenv').config()
 
 //welcoming screen
 app.get('/hello',(req,res)=> {
@@ -35,9 +39,30 @@ app.patch('/api/v1/tasks/:id')
 //delete task
 app.delete('/api/v1/tasks/:id')
 */
-
 //set port
 const port = 3000;
 
-//listen the port and handle requests
-app.listen(port,console.log(`server is listening on port ${port}...`));
+const start = async () => {
+    try {
+        //use mongo uri and connect to the db
+        await connectDB(process.env.MONGO_URI)
+        //if connection of db is succesfull, then listen on the server
+        //listen the port and handle requests
+        app.listen(port,console.log(`server is listening on port ${port}...`));
+
+
+    } catch (error) {
+        //prin the error to the console
+        console.log(error)
+    }
+}
+
+//start the server and connect to the db
+start()
+
+
+
+
+
+
+
